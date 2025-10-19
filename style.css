@@ -42,6 +42,7 @@ fieldset{border:1px solid #2b2f57;border-radius:12px;padding:12px 12px 4px;margi
 legend{padding:0 8px;color:var(--muted)}
 .inline{margin-right:14px;display:inline-flex;gap:6px;align-items:center}
 
+/* fixed selector (was 'the.grid-2' by mistake) */
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 label>input, label>select{margin-top:6px;width:100%;padding:10px;border-radius:10px;border:1px solid #363b6b;background:#0e1030;color:var(--text)}
 
@@ -50,12 +51,35 @@ label>input, label>select{margin-top:6px;width:100%;padding:10px;border-radius:1
 .chip input{display:none}
 .chip.active{outline:2px solid var(--focus)}
 
-.actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+/* Actions/buttons layout fix: keep buttons aligned with the form content and responsive */
+.actions{
+  display:flex;
+  gap:12px;
+  margin-top:18px;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:flex-start; /* align left with the form content */
+}
+
+/* Ensure action buttons inside the settings form sit within the same padded content area
+   and look consistent across breakpoints. */
+#settings-form > .actions,
+.settings-actions{
+  /* keeps the action block visually grouped with the form */
+  padding: 6px 0 0;
+  margin: 18px 0 0;
+}
+
+/* Slightly smaller min-width so two buttons fit comfortably on narrow screens */
+.actions .btn{min-width:120px}
+
+/* Make primary CTA stand out and keep consistent spacing on small screens */
 .btn{border:1px solid #343a6a;background:#14173a;color:var(--text);padding:10px 14px;border-radius:10px;cursor:pointer}
 .btn.primary{background:linear-gradient(180deg, #9f4aa5, var(--primary));border:0}
 .btn.danger{background:linear-gradient(180deg,#c14b54,var(--danger));border:0}
 .btn:disabled{opacity:0.6;cursor:not-allowed}
 
+/* Topbar */
 .quiz-topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0}
 #progress,#score{background:var(--panel);padding:8px 10px;border-radius:10px;border:1px solid #2b2f57;color:var(--muted)}
 
@@ -97,4 +121,7 @@ label>input, label>select{margin-top:6px;width:100%;padding:10px;border-radius:1
 @media (max-width:720px){
   .grid-2{grid-template-columns:1fr}
   .choice{grid-template-columns:auto 24px 1fr}
+  /* Make action buttons stack on small screens and fill available width */
+  .actions{justify-content:flex-start}
+  .actions .btn{flex:1 1 auto;min-width:120px}
 }
