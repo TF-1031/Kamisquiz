@@ -1,63 +1,11 @@
-// Kami's Quiz — self-contained version (no JSON fetch needed)
+// Kami's Quiz — JSON version with random 20-question selection
 
-// === Question Bank ===
-const questions = [
-  {
-    question: "Define menopause.",
-    options: [
-      "12 consecutive months without menstruation",
-      "6 months without menstruation",
-      "Cessation of ovulation for 6 months",
-      "First missed menstrual cycle"
-    ],
-    answer: 0
-  },
-  {
-    question: "What are common vasomotor symptoms (VMS)?",
-    options: [
-      "Headaches and blurred vision",
-      "Hot flashes and night sweats",
-      "Pelvic pain and cramping",
-      "Fatigue and memory loss"
-    ],
-    answer: 1
-  },
-  {
-    question: "Which therapy is first-line for GSM (genitourinary syndrome of menopause)?",
-    options: [
-      "Systemic estrogen therapy",
-      "Nonhormonal lubricants and moisturizers",
-      "High-dose vaginal estrogen",
-      "Testosterone cream"
-    ],
-    answer: 1
-  },
-  {
-    question: "What is the 'timing hypothesis' for hormone therapy?",
-    options: [
-      "It is best started before age 60 or within 10 years of menopause",
-      "It should always be started after age 60",
-      "It should never be used after 5 years post-menopause",
-      "It must only be used if FSH is elevated"
-    ],
-    answer: 0
-  },
-  {
-    question: "Which is a contraindication to systemic estrogen therapy?",
-    options: [
-      "Active liver disease",
-      "Mild hypertension",
-      "Low bone density",
-      "Hot flashes"
-    ],
-    answer: 0
-  }
-];
-
-// === DOM elements ===
+let questions = [];
+let activeQuestions = [];
 let currentQuestion = 0;
 let score = 0;
 
+// === DOM Elements ===
 const startBtn = document.getElementById("start-btn");
 const nextBtn = document.getElementById("next-btn");
 const questionText = document.getElementById("question-text");
@@ -65,18 +13,59 @@ const optionsDiv = document.getElementById("options");
 const scoreBox = document.getElementById("score-box");
 const scoreText = document.getElementById("score-text");
 
-// === Core functions ===
+// Question counter element
+const counterEl = document.createElement("p");
+counterEl.id = "question-counter";
+counterEl.style.marginTop = "1rem";
+counterEl.style.color = "#bbb";
+counterEl.style.fontSize = "1rem";
+counterEl.style.textAlign = "center";
+optionsDiv.insertAdjacentElement("afterend", counterEl);
+
+// === Load and prepare questions ===
+async function loadQuestions() {
+  try {
+    const res = await fetch("./questions.json");
+    if (!res.ok) throw new Error("Network error");
+    questions = await res.json();
+    console.log(`Loaded ${questions.length} questions.`);
+  } catch (err) {
+    console.error("Could not load questions.json", err);
+    alert("⚠️ Error loading questions. Make sure 'questions.json' is present in your repo.");
+    questions = [];
+  }
+}
+
+// Shuffle helper
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// === Core Quiz Logic ===
 function startQuiz() {
+  if (questions.length === 0) {
+    alert("No questions loaded. Please check your questions.json file.");
+    return;
+  }
+
+  // Randomize and limit to 20
+  activeQuestions = shuffle([...questions]).slice(0, 20);
+
   score = 0;
   currentQuestion = 0;
   scoreBox.style.display = "none";
-  startBtn.disabled = true;
   nextBtn.disabled = true;
+
+  startBtn.textContent = "Restart Quiz";
   showQuestion();
 }
 
 function showQuestion() {
-  const q = questions[currentQuestion];
+  const q = activeQuestions[currentQuestion];
   questionText.textContent = q.question;
   optionsDiv.innerHTML = "";
 
@@ -87,19 +76,21 @@ function showQuestion() {
     btn.onclick = () => selectAnswer(i);
     optionsDiv.appendChild(btn);
   });
+
+  counterEl.textContent = `Question ${currentQuestion + 1} of ${activeQuestions.length}`;
 }
 
 function selectAnswer(selected) {
-  const q = questions[currentQuestion];
+  const q = activeQuestions[currentQuestion];
   const allBtns = optionsDiv.querySelectorAll("button");
 
   allBtns.forEach((btn, i) => {
     btn.disabled = true;
     if (i === q.answer) {
-      btn.style.backgroundColor = "#4CAF50"; // green for correct
+      btn.style.backgroundColor = "#4CAF50";
       btn.style.color = "#fff";
     } else if (i === selected) {
-      btn.style.backgroundColor = "#f44336"; // red for wrong
+      btn.style.backgroundColor = "#f44336";
       btn.style.color = "#fff";
     }
   });
@@ -110,7 +101,7 @@ function selectAnswer(selected) {
 
 function nextQuestion() {
   currentQuestion++;
-  if (currentQuestion < questions.length) {
+  if (currentQuestion < activeQuestions.length) {
     nextBtn.disabled = true;
     showQuestion();
   } else {
@@ -121,12 +112,15 @@ function nextQuestion() {
 function showScore() {
   questionText.textContent = "Quiz Complete!";
   optionsDiv.innerHTML = "";
-  scoreText.textContent = `You scored ${score} of ${questions.length}`;
+  counterEl.textContent = "";
+  scoreText.textContent = `You scored ${score} of ${activeQuestions.length}`;
   scoreBox.style.display = "block";
-  startBtn.disabled = false;
   nextBtn.disabled = true;
 }
 
 // === Event Listeners ===
 startBtn.addEventListener("click", startQuiz);
 nextBtn.addEventListener("click", nextQuestion);
+
+// === Initialize ===
+loadQuestions();
