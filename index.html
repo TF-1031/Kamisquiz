@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NAMS Master Quiz</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>NAMS Master Quiz</h1>
+    <p class="subtitle">Clinician’s Guide (6th Ed.) — Practice for NCMP</p>
+  </header>
+
+  <main id="view-home" class="view active" aria-labelledby="home-title">
+    <h2 id="home-title">Start a New Game</h2>
+    <form id="settings-form">
+      <fieldset>
+        <legend>Question Pool</legend>
+        <div class="chips" id="category-chips">
+          <!-- Populated by script based on available categories in questions.json -->
+        </div>
+        <label class="inline">
+          <input type="checkbox" id="mix-all" checked />
+          Mix all topics
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Difficulty</legend>
+        <label class="inline"><input type="radio" name="difficulty" value="any" checked /> Any</label>
+        <label class="inline"><input type="radio" name="difficulty" value="beginner" /> Beginner</label>
+        <label class="inline"><input type="radio" name="difficulty" value="intermediate" /> Intermediate</label>
+        <label class="inline"><input type="radio" name="difficulty" value="advanced" /> Advanced</label>
+      </fieldset>
+
+      <fieldset class="grid-2">
+        <label>Questions per round
+          <input type="number" id="num-questions" min="5" max="50" value="20" />
+        </label>
+        <label>Shuffle answers
+          <select id="shuffle-answers">
+            <option value="yes" selected>Yes</option>
+            <option value="no">No</option>
+          </select>
+        </label>
+      </fieldset>
+
+      <div class="actions">
+        <button type="submit" class="btn primary">Start Quiz</button>
+        <button type="button" id="btn-review-mode" class="btn">Review Missed</button>
+      </div>
+    </form>
+
+    <section class="panel">
+      <h3>About</h3>
+      <p>This is a self-contained study app for NAMS/NCMP prep. It randomizes your questions, tracks missed items, and supports review rounds.</p>
+      <ul>
+        <li><strong>Missed tracking:</strong> Saved on your device (no login).</li>
+        <li><strong>Review Mode:</strong> Drills only your previously missed questions.</li>
+        <li><strong>Score history:</strong> See performance trends.</li>
+      </ul>
+    </section>
+
+    <section class="panel" id="history-panel">
+      <h3>Score History</h3>
+      <table id="history-table" aria-label="Score History">
+        <thead>
+          <tr><th>Date</th><th>Score</th><th>Correct</th><th>Total</th><th>Settings</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="history-actions">
+        <button type="button" id="btn-clear-history" class="btn danger">Clear History</button>
+        <button type="button" id="btn-clear-missed" class="btn">Clear Missed</button>
+      </div>
+    </section>
+  </main>
+
+  <main id="view-quiz" class="view" aria-live="polite">
+    <div class="quiz-topbar">
+      <div id="progress">Question 1 / 20</div>
+      <div id="score">Score: 0</div>
+      <button id="btn-exit" class="btn">Exit</button>
+    </div>
+
+    <article id="card" class="card" aria-labelledby="question-stem">
+      <div class="meta">
+        <span id="q-category" class="pill"></span>
+        <span id="q-difficulty" class="pill"></span>
+      </div>
+      <h2 id="question-stem">Loading…</h2>
+
+      <form id="choices" class="choices" aria-label="Answer choices" role="radiogroup">
+        <!-- choices injected here -->
+      </form>
+
+      <div id="feedback" class="feedback" aria-live="polite"></div>
+
+      <div class="actions">
+        <button id="btn-submit" class="btn primary">Submit</button>
+        <button id="btn-next" class="btn" disabled>Next</button>
+      </div>
+
+      <details id="explain-wrap" class="explain">
+        <summary>Explanation</summary>
+        <div id="explanation"></div>
+      </details>
+    </article>
+  </main>
+
+  <template id="choice-template">
+    <label class="choice">
+      <input type="radio" name="choice" />
+      <span class="letter"></span>
+      <span class="text"></span>
+    </label>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
