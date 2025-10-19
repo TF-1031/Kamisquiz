@@ -1,0 +1,142 @@
+[
+  {
+    "id": "q1",
+    "category": "Menopause Staging",
+    "difficulty": "beginner",
+    "stem": "According to STRAW+10, menopause is diagnosed retrospectively after how long without menses?",
+    "choices": [
+      "3 months",
+      "6 months",
+      "12 months",
+      "24 months"
+    ],
+    "answer": 2,
+    "explanation": "Natural menopause is defined retrospectively after 12 consecutive months of amenorrhea."
+  },
+  {
+    "id": "q2",
+    "category": "Vasomotor Symptoms",
+    "difficulty": "intermediate",
+    "stem": "First-line pharmacologic therapy for bothersome vasomotor symptoms in an otherwise healthy 52-year-old within 3 years of her final menstrual period is typically:",
+    "choices": [
+      "Systemic estrogen therapy (with progestogen if uterus present)",
+      "Clonidine patch",
+      "Black cohosh",
+      "Ospemifene"
+    ],
+    "answer": 0,
+    "explanation": "Menopausal hormone therapy is the most effective treatment for vasomotor symptoms; add a progestogen if the uterus is intact."
+  },
+  {
+    "id": "q3",
+    "category": "GSM",
+    "difficulty": "intermediate",
+    "stem": "Which option best treats moderate genitourinary syndrome of menopause when systemic therapy is not desired?",
+    "choices": [
+      "Vaginal moisturizers only",
+      "Low-dose vaginal estrogen therapy",
+      "Oral combined estrogen-progestin therapy",
+      "High-dose systemic estrogen alone"
+    ],
+    "answer": 1,
+    "explanation": "Local low-dose vaginal estrogen is effective for moderate GSM with minimal systemic absorption."
+  },
+  {
+    "id": "q4",
+    "category": "Sexual Function",
+    "difficulty": "intermediate",
+    "stem": "Evidence-based hormonal therapy for postmenopausal women with hypoactive sexual desire disorder (HSDD) is:",
+    "choices": [
+      "Estradiol gel",
+      "Transdermal testosterone at physiologic doses",
+      "DHEA oral supplementation",
+      "Oral progesterone"
+    ],
+    "answer": 1,
+    "explanation": "Transdermal testosterone at physiologic (female) doses has evidence for improving sexual desire in HSDD."
+  },
+  {
+    "id": "q5",
+    "category": "Bone Health",
+    "difficulty": "intermediate",
+    "stem": "Which is a standard indication for DXA screening in postmenopausal women?",
+    "choices": [
+      "All women age 45+",
+      "Any woman with BMI > 30",
+      "Women ≥65 years or younger postmenopausal women with risk factors",
+      "Only those with prior fragility fracture"
+    ],
+    "answer": 2,
+    "explanation": "Screen all women ≥65 and younger postmenopausal women with risk factors for osteoporosis."
+  },
+  {
+    "id": "q6",
+    "category": "Cardiometabolic",
+    "difficulty": "intermediate",
+    "stem": "For a 55-year-old with bothersome VMS and 10-year ASCVD risk of 2%, the preferred estrogen route to minimize thrombotic risk is:",
+    "choices": [
+      "Oral conjugated estrogen",
+      "Transdermal estradiol",
+      "High-dose oral estradiol",
+      "Intramuscular estrogen"
+    ],
+    "answer": 1,
+    "explanation": "Transdermal estradiol has less hepatic first-pass effect and is associated with lower VTE risk."
+  },
+  {
+    "id": "q7",
+    "category": "Hormone Therapy",
+    "difficulty": "advanced",
+    "stem": "A patient with an intact uterus starting systemic estrogen therapy should also receive:",
+    "choices": [
+      "No additional medication",
+      "A SERM only",
+      "Adequate progestogen for endometrial protection",
+      "Testosterone"
+    ],
+    "answer": 2,
+    "explanation": "Progestogen is required with systemic estrogen in women with a uterus to prevent endometrial hyperplasia/cancer."
+  },
+  {
+    "id": "q8",
+    "category": "Cancer Screening",
+    "difficulty": "beginner",
+    "stem": "Which statement about breast cancer screening is most accurate for average-risk women 50–74?",
+    "choices": [
+      "Annual MRI is standard",
+      "Mammography is recommended at regular intervals",
+      "Screening is not recommended",
+      "Only clinical breast exam is required"
+    ],
+    "answer": 1,
+    "explanation": "Mammography at regular intervals remains standard for average-risk women in this age group."
+  },
+  {
+    "id": "q9",
+    "category": "Thyroid",
+    "difficulty": "intermediate",
+    "stem": "In a symptomatic midlife woman, which lab pattern most suggests primary hypothyroidism?",
+    "choices": [
+      "Low TSH, low free T4",
+      "High TSH, low free T4",
+      "Normal TSH, high free T4",
+      "High TSH, high free T4"
+    ],
+    "answer": 1,
+    "explanation": "Primary hypothyroidism typically shows high TSH with low free T4."
+  },
+  {
+    "id": "q10",
+    "category": "Contraception",
+    "difficulty": "intermediate",
+    "stem": "Perimenopausal contraception: which is true?",
+    "choices": [
+      "Pregnancy cannot occur after age 45",
+      "Contraception is unnecessary after 6 months amenorrhea",
+      "Contraception is recommended until menopause is confirmed",
+      "Copper IUD is contraindicated after age 40"
+    ],
+    "answer": 2,
+    "explanation": "Continue contraception until menopause is confirmed (12 months amenorrhea not due to other causes)."
+  }
+]
