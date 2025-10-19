@@ -1,23 +1,25 @@
-/* Kami’s Quiz – Dark Theme, Large Buttons */
+/* Kami’s Quiz – Optimized for iPhone (large stacked buttons) */
 
 body {
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background: radial-gradient(circle at top, #111a2b 0%, #0b0e19 100%);
-  color: #f0f4ff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: linear-gradient(to bottom, #101527 0%, #0b0e19 100%);
+  color: #fff;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 header {
   width: 100%;
   text-align: center;
-  padding: 1rem 0;
-  background: rgba(255, 255, 255, 0.05);
-  font-size: 1.5rem;
+  padding: 1rem 0 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 1.8rem;
   font-weight: 600;
   letter-spacing: 0.5px;
 }
@@ -25,79 +27,95 @@ header {
 main {
   flex: 1;
   width: 100%;
-  max-width: 700px;
+  max-width: 500px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
-  padding: 1rem;
+  padding: 1.2rem;
   box-sizing: border-box;
 }
 
 #question-box {
   text-align: center;
-  margin-bottom: 1rem;
+  margin: 1rem 0 2rem;
+  width: 100%;
 }
 
 #question-text {
   font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 1.5;
   margin: 0 0 1.5rem;
-  line-height: 1.4;
-  color: #fff;
+  padding: 0 0.5rem;
 }
 
 #options {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.9rem;
   width: 100%;
 }
 
 .option-btn {
-  font-size: 1.1rem;
-  padding: 1rem;
+  width: 100%;
+  font-size: 1.2rem;
+  font-weight: 500;
+  padding: 1.25rem 1rem;
   border: none;
-  border-radius: 12px;
+  border-radius: 14px;
   background-color: #22335b;
-  color: #f0f4ff;
+  color: #f5f7ff;
   cursor: pointer;
-  transition: transform 0.15s ease, background-color 0.2s ease;
+  transition: background-color 0.25s ease, transform 0.1s ease;
+  text-align: center;
 }
 
-.option-btn:hover {
-  background-color: #2e4a7a;
-  transform: scale(1.02);
-}
-
+.option-btn:hover,
 .option-btn:active {
-  transform: scale(0.98);
+  background-color: #2e4a7a;
+  transform: scale(0.99);
+}
+
+.option-btn:disabled {
+  opacity: 0.7;
 }
 
 #controls {
   display: flex;
-  justify-content: center;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.8rem;
   margin-top: 2rem;
+  width: 100%;
 }
 
 #controls button {
-  font-size: 1.1rem;
-  padding: 0.9rem 1.6rem;
-  border-radius: 10px;
+  width: 100%;
+  font-size: 1.3rem;
+  font-weight: 600;
+  padding: 1.2rem;
   border: none;
-  cursor: pointer;
-  color: #fff;
+  border-radius: 14px;
   background-color: #3a63dd;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  color: #fff;
+  transition: background-color 0.2s ease;
 }
 
-#controls button:hover {
+#controls button:hover,
+#controls button:active {
   background-color: #5179f1;
 }
 
 #controls button:disabled {
   background-color: #3a3a3a;
   cursor: not-allowed;
+}
+
+#score-box {
+  margin-top: 2.5rem;
+  text-align: center;
+  font-size: 1.4rem;
+  color: #9ee27d;
 }
 
 footer {
@@ -107,23 +125,27 @@ footer {
   color: #aaa;
 }
 
-#score-box {
-  margin-top: 2rem;
-  text-align: center;
-  font-size: 1.3rem;
-  color: #9ee27d;
-}
-
+/* iPhone specific tweaks */
 @media (max-width: 600px) {
+  header {
+    font-size: 1.5rem;
+  }
+
   #question-text {
     font-size: 1.25rem;
   }
+
   .option-btn {
-    font-size: 1rem;
+    font-size: 1.1rem;
     padding: 1.2rem;
   }
+
   #controls button {
-    font-size: 1rem;
-    padding: 1rem 1.4rem;
+    font-size: 1.1rem;
+    padding: 1.2rem;
+  }
+
+  #score-box {
+    font-size: 1.3rem;
   }
 }
