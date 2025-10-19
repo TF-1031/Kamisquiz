@@ -1,127 +1,129 @@
-:root{
-  --bg:#0f1221;
-  --panel:#181b31;
-  --card:#1f2341;
-  --text:#e9ecf6;
-  --muted:#a9afd4;
-  --primary:#8d3b91; /* nod to Sparklight Baton */
-  --success:#35c26b;
-  --danger:#e34f5a;
-  --pill:#2a2f57;
-  --focus:#9c7fe0;
+/* Kami’s Quiz – Dark Theme, Large Buttons */
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: radial-gradient(circle at top, #111a2b 0%, #0b0e19 100%);
+  color: #f0f4ff;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
 }
 
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  font-family:system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-  color:var(--text);
-  background: radial-gradient(1200px 800px at right -200px top -200px, #21254a, var(--bg));
+header {
+  width: 100%;
+  text-align: center;
+  padding: 1rem 0;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
-.app-header{
-  padding:24px 20px 10px;
-  text-align:center;
-}
-.app-header h1{margin:0 0 6px;font-weight:800;letter-spacing:0.2px}
-.subtitle{margin:0;color:var(--muted)}
-
-.view{display:none;max-width:960px;margin:0 auto;padding:16px}
-.view.active{display:block}
-
-.panel{
-  background:var(--panel);
-  border:1px solid #2b2f57;
-  border-radius:14px;
-  padding:16px;
-  margin:16px 0;
+main {
+  flex: 1;
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
-fieldset{border:1px solid #2b2f57;border-radius:12px;padding:12px 12px 4px;margin:14px 0}
-legend{padding:0 8px;color:var(--muted)}
-.inline{margin-right:14px;display:inline-flex;gap:6px;align-items:center}
-
-/* fixed selector (was 'the.grid-2' by mistake) */
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-label>input, label>select{margin-top:6px;width:100%;padding:10px;border-radius:10px;border:1px solid #363b6b;background:#0e1030;color:var(--text)}
-
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
-.chip{background:var(--pill);border:1px solid #343a6a;color:var(--text);padding:6px 10px;border-radius:999px;cursor:pointer;user-select:none}
-.chip input{display:none}
-.chip.active{outline:2px solid var(--focus)}
-
-/* Actions/buttons layout fix: keep buttons aligned with the form content and responsive */
-.actions{
-  display:flex;
-  gap:12px;
-  margin-top:18px;
-  flex-wrap:wrap;
-  align-items:center;
-  justify-content:flex-start; /* align left with the form content */
+#question-box {
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
-/* Ensure action buttons inside the settings form sit within the same padded content area
-   and look consistent across breakpoints. */
-#settings-form > .actions,
-.settings-actions{
-  /* keeps the action block visually grouped with the form */
-  padding: 6px 0 0;
-  margin: 18px 0 0;
+#question-text {
+  font-size: 1.4rem;
+  margin: 0 0 1.5rem;
+  line-height: 1.4;
+  color: #fff;
 }
 
-/* Slightly smaller min-width so two buttons fit comfortably on narrow screens */
-.actions .btn{min-width:120px}
-
-/* Make primary CTA stand out and keep consistent spacing on small screens */
-.btn{border:1px solid #343a6a;background:#14173a;color:var(--text);padding:10px 14px;border-radius:10px;cursor:pointer}
-.btn.primary{background:linear-gradient(180deg, #9f4aa5, var(--primary));border:0}
-.btn.danger{background:linear-gradient(180deg,#c14b54,var(--danger));border:0}
-.btn:disabled{opacity:0.6;cursor:not-allowed}
-
-/* Topbar */
-.quiz-topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0}
-#progress,#score{background:var(--panel);padding:8px 10px;border-radius:10px;border:1px solid #2b2f57;color:var(--muted)}
-
-.card{
-  background:linear-gradient(180deg, #262a53, var(--card));
-  border:1px solid #2b2f57;
-  border-radius:16px;
-  padding:16px;
-  box-shadow:0 30px 70px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.03);
+#options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
 }
-.card .meta{display:flex;gap:8px;margin-bottom:8px}
-.pill{background:var(--pill);color:var(--muted);padding:4px 8px;border-radius:999px;border:1px solid #343a6a;font-size:12px}
 
-.choices{display:grid;gap:10px;margin:16px 0}
-.choice{
-  display:grid;grid-template-columns:auto 28px 1fr;gap:10px;align-items:center;
-  background:rgba(20,23,58,.6);
-  border:1px solid #2d3260;
-  border-radius:12px;
-  padding:10px 12px;
-  cursor:pointer;
+.option-btn {
+  font-size: 1.1rem;
+  padding: 1rem;
+  border: none;
+  border-radius: 12px;
+  background-color: #22335b;
+  color: #f0f4ff;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.2s ease;
 }
-.choice input{accent-color:var(--primary)}
-.choice .letter{font-weight:700;opacity:.9}
-.choice.correct{border-color:var(--success)}
-.choice.incorrect{border-color:var(--danger)}
 
-.feedback{min-height:24px;margin:8px 0 0}
-.feedback.success{color:var(--success)}
-.feedback.error{color:var(--danger)}
+.option-btn:hover {
+  background-color: #2e4a7a;
+  transform: scale(1.02);
+}
 
-.explain{margin-top:10px}
-.explain summary{cursor:pointer}
+.option-btn:active {
+  transform: scale(0.98);
+}
 
-#history-table{width:100%;border-collapse:collapse}
-#history-table th,#history-table td{padding:8px;border-bottom:1px solid #2b2f57;text-align:left;color:var(--text)}
-#history-table td:nth-child(1),#history-table td:nth-child(2){color:var(--muted)}
+#controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
 
-@media (max-width:720px){
-  .grid-2{grid-template-columns:1fr}
-  .choice{grid-template-columns:auto 24px 1fr}
-  /* Make action buttons stack on small screens and fill available width */
-  .actions{justify-content:flex-start}
-  .actions .btn{flex:1 1 auto;min-width:120px}
+#controls button {
+  font-size: 1.1rem;
+  padding: 0.9rem 1.6rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  background-color: #3a63dd;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+#controls button:hover {
+  background-color: #5179f1;
+}
+
+#controls button:disabled {
+  background-color: #3a3a3a;
+  cursor: not-allowed;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+#score-box {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 1.3rem;
+  color: #9ee27d;
+}
+
+@media (max-width: 600px) {
+  #question-text {
+    font-size: 1.25rem;
+  }
+  .option-btn {
+    font-size: 1rem;
+    padding: 1.2rem;
+  }
+  #controls button {
+    font-size: 1rem;
+    padding: 1rem 1.4rem;
+  }
 }
