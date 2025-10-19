@@ -1,11 +1,15 @@
-/* Kami’s Quiz – Optimized for iPhone (large stacked buttons) */
+/* Kami’s Quiz — Universal iPhone/iOS large stacked buttons */
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background: linear-gradient(to bottom, #101527 0%, #0b0e19 100%);
+  background: linear-gradient(to bottom, #11192b 0%, #0b0e19 100%);
   color: #fff;
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -15,89 +19,100 @@ body {
 }
 
 header {
-  width: 100%;
   text-align: center;
   padding: 1rem 0 0.5rem;
-  background: rgba(255, 255, 255, 0.04);
   font-size: 1.8rem;
   font-weight: 600;
   letter-spacing: 0.5px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
 }
 
 main {
   flex: 1;
   width: 100%;
-  max-width: 500px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  flex-direction: column;
+  max-width: 480px;
   padding: 1.2rem;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #question-box {
+  width: 100%;
   text-align: center;
   margin: 1rem 0 2rem;
-  width: 100%;
 }
 
 #question-text {
   font-size: 1.4rem;
   font-weight: 500;
-  line-height: 1.5;
-  margin: 0 0 1.5rem;
+  margin: 0 0 1.4rem;
   padding: 0 0.5rem;
+  line-height: 1.4;
 }
 
+/* === Answer Buttons === */
 #options {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
-  width: 100%;
+  gap: 1rem;
 }
 
 .option-btn {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
   width: 100%;
-  font-size: 1.2rem;
+  box-sizing: border-box;
+  font-size: 1.25rem;
   font-weight: 500;
   padding: 1.25rem 1rem;
   border: none;
   border-radius: 14px;
-  background-color: #22335b;
-  color: #f5f7ff;
-  cursor: pointer;
-  transition: background-color 0.25s ease, transform 0.1s ease;
+  background-color: #243a6d;
+  color: #f6f8ff;
   text-align: center;
+  cursor: pointer;
+  margin: 0;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .option-btn:hover,
 .option-btn:active {
-  background-color: #2e4a7a;
-  transform: scale(0.99);
+  background-color: #3353a0;
+  transform: scale(0.98);
 }
 
 .option-btn:disabled {
   opacity: 0.7;
 }
 
+/* === Control Buttons === */
 #controls {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 1rem;
   margin-top: 2rem;
-  width: 100%;
 }
 
 #controls button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
   width: 100%;
+  box-sizing: border-box;
   font-size: 1.3rem;
   font-weight: 600;
-  padding: 1.2rem;
+  padding: 1.3rem;
   border: none;
   border-radius: 14px;
   background-color: #3a63dd;
   color: #fff;
+  cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
@@ -111,8 +126,9 @@ main {
   cursor: not-allowed;
 }
 
+/* === Score Box === */
 #score-box {
-  margin-top: 2.5rem;
+  margin-top: 2rem;
   text-align: center;
   font-size: 1.4rem;
   color: #9ee27d;
@@ -125,27 +141,10 @@ footer {
   color: #aaa;
 }
 
-/* iPhone specific tweaks */
-@media (max-width: 600px) {
-  header {
-    font-size: 1.5rem;
-  }
-
-  #question-text {
-    font-size: 1.25rem;
-  }
-
-  .option-btn {
-    font-size: 1.1rem;
-    padding: 1.2rem;
-  }
-
-  #controls button {
-    font-size: 1.1rem;
-    padding: 1.2rem;
-  }
-
-  #score-box {
-    font-size: 1.3rem;
-  }
+/* iPhone small-screen tweak */
+@media (max-width: 480px) {
+  header { font-size: 1.5rem; }
+  #question-text { font-size: 1.25rem; }
+  .option-btn { font-size: 1.1rem; padding: 1.3rem; }
+  #controls button { font-size: 1.15rem; padding: 1.2rem; }
 }
