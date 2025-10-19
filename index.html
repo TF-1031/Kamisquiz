@@ -1,122 +1,624 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>NAMS Master Quiz</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>NAMS Flashcards — Study Mode</title>
+  <style>
+    :root{
+      --bg:#0f1320;
+      --card:#151a2b;
+      --ink:#e8ecff;
+      --ink-dim:#b6c0ff;
+      --accent:#7b9cff;
+      --accent-2:#4dd0b5;
+      --warn:#ff9f68;
+      --bad:#ff6b6b;
+      --good:#77e27d;
+      --easy:#c7f36d;
+      --muted:#7b84a2;
+      --border: #24304f;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, Noto Sans, "Apple Color Emoji","Segoe UI Emoji", "Segoe UI Symbol";
+      background: radial-gradient(1200px 800px at 10% -10%, #1a2140 0%, #0f1320 50%, #0b0e19 100%) fixed;
+      color:var(--ink);
+      min-height:100dvh;
+      display:flex;
+      flex-direction:column;
+    }
+    header{
+      display:flex; align-items:center; gap:.75rem;
+      padding:1rem 1.25rem;
+      border-bottom:1px solid var(--border);
+      position:sticky; top:0; backdrop-filter:saturate(120%) blur(8px);
+      background:linear-gradient(180deg, rgba(12,16,30,.75), rgba(12,16,30,.45));
+      z-index:5;
+    }
+    header h1{
+      font-size:1rem; font-weight:650; margin:0;
+      letter-spacing:.2px; color:var(--ink);
+    }
+    .subtle{color:var(--ink-dim); font-weight:450}
+    .tag{
+      padding:.2rem .5rem; border:1px solid var(--border);
+      color:var(--ink-dim); border-radius:999px; font-size:.75rem;
+    }
+    .spacer{flex:1}
+    .btn{
+      appearance:none; border:none; cursor:pointer;
+      font-weight:600; color:#0a0d18; background:var(--accent);
+      padding:.65rem .9rem; border-radius:12px; box-shadow:var(--shadow);
+      transition:.18s transform ease, .18s opacity ease, .18s background ease;
+      display:inline-flex; align-items:center; gap:.5rem;
+    }
+    .btn.secondary{background:#24304f; color:var(--ink); box-shadow:none; border:1px solid var(--border)}
+    .btn.ghost{background:transparent; color:var(--ink); border:1px solid var(--border); box-shadow:none}
+    .btn.small{padding:.45rem .6rem; font-weight:600; border-radius:10px}
+    .btn:active{transform:translateY(1px)}
+    main{max-width:900px; width:100%; margin:0 auto; padding:1.25rem; flex:1; display:flex; flex-direction:column; gap:1rem}
+    .wrap{display:grid; grid-template-columns:1fr; gap:1rem}
+    .panel{
+      background:linear-gradient(180deg, rgba(29,37,69,.75), rgba(20,26,45,.9));
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:1rem;
+      box-shadow:var(--shadow);
+    }
+    .grid{display:grid; gap:1rem}
+    .grid.cols-2{grid-template-columns:1fr 1fr}
+    @media (max-width:900px){ .grid.cols-2{grid-template-columns:1fr} }
+    .controls{display:flex; flex-wrap:wrap; gap:.5rem}
+    .stats{display:flex; gap:1rem; flex-wrap:wrap; color:var(--ink-dim); font-size:.95rem}
+    .stats b{color:var(--ink)}
+    .card-outer{perspective:1200px; min-height:300px}
+    .card{
+      border:1px solid var(--border);
+      border-radius:20px;
+      min-height:300px;
+      padding:1.25rem 1.25rem 4.5rem;
+      background:linear-gradient(180deg, #141a2e, #0f1426 55%, #0f1426);
+      box-shadow: var(--shadow);
+      position:relative;
+      transform-style:preserve-3d;
+      transition: transform .5s;
+    }
+    .card.flipped{ transform: rotateY(180deg); }
+    .face{
+      position:absolute; inset:0; padding:1.25rem 1.25rem 4.5rem;
+      backface-visibility:hidden; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:1rem; text-align:left;
+    }
+    .back{ transform: rotateY(180deg); }
+    .q{
+      font-size:1.15rem; line-height:1.5; letter-spacing:.2px;
+      color:var(--ink);
+      width:100%;
+      white-space:pre-wrap;
+    }
+    .a{
+      font-size:1.02rem; line-height:1.5; color:var(--ink-dim);
+      width:100%; white-space:pre-wrap;
+    }
+    .labels{position:absolute; top:.75rem; left:.75rem; display:flex; gap:.5rem; flex-wrap:wrap}
+    .labels .tag{border-color:#2b375a}
+    .nav{
+      position:absolute; inset-inline:0; bottom:.75rem; display:flex; align-items:center; justify-content:space-between; gap:.5rem; padding:.5rem .75rem;
+    }
+    .rate{
+      display:flex; gap:.5rem; flex-wrap:wrap;
+    }
+    .rate button{ font-size:.95rem }
+    .rate .again{ background:var(--bad); }
+    .rate .good{ background:var(--accent-2); }
+    .rate .easy{ background:var(--easy); }
+    .mutetext{ color:var(--muted); font-size:.9rem }
+    .list{max-height:240px; overflow:auto; border:1px dashed var(--border); border-radius:12px; padding:.5rem}
+    table{width:100%; border-collapse:collapse; font-size:.95rem}
+    th,td{padding:.5rem .6rem; border-bottom:1px solid var(--border); color:var(--ink-dim)}
+    th{color:var(--ink); text-align:left; position:sticky; top:0; background:#12172a}
+    .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:.85rem; padding:.15rem .4rem; border:1px solid var(--border); border-radius:6px; color:var(--ink-dim)}
+    .hint{color:var(--muted); font-size:.85rem}
+    .hidden{display:none}
+    .center{display:flex; align-items:center; justify-content:center}
+    .progressbar{height:8px; background:#233053; border-radius:999px; overflow:hidden}
+    .progressbar>div{height:100%; width:0%; background:linear-gradient(90deg,var(--accent), var(--accent-2)); transition:width .3s ease}
+    footer{padding:1rem; color:var(--muted); text-align:center; font-size:.9rem}
+    input[type=file]{display:none}
+    .filelabel{border:1px dashed var(--border); padding:.6rem .75rem; border-radius:10px; display:inline-flex; gap:.5rem; align-items:center; cursor:pointer}
+    .pill{padding:.25rem .5rem; border-radius:999px; background:#24304f; color:var(--ink-dim); font-size:.75rem}
+    .sep{height:1px; background:var(--border); margin:.5rem 0 1rem}
+    .stack{display:flex; flex-direction:column; gap:.5rem}
+    .row{display:flex; gap:.5rem; flex-wrap:wrap; align-items:center}
+    textarea,input{background:#10162a; color:var(--ink); border:1px solid var(--border); border-radius:10px; padding:.6rem .7rem; width:100%}
+    textarea{min-height:120px}
+    .inline{display:inline-flex; gap:.4rem; align-items:center}
+  </style>
 </head>
 <body>
-  <header class="app-header">
-    <h1>NAMS Master Quiz</h1>
-    <p class="subtitle">Clinician’s Guide (6th Ed.) — Practice for NCMP</p>
+  <header>
+    <h1>NAMS Flashcards <span class="subtle">— Study Mode</span></h1>
+    <span class="tag">Local save</span>
+    <span class="tag">No login</span>
+    <div class="spacer"></div>
+    <button class="btn small secondary" id="btnReview">Review Missed</button>
+    <button class="btn small" id="btnStudy">Start Study</button>
   </header>
 
-  <main id="view-home" class="view active" aria-labelledby="home-title">
-    <h2 id="home-title">Start a New Game</h2>
-    <form id="settings-form">
-      <fieldset>
-        <legend>Question Pool</legend>
-        <div class="chips" id="category-chips">
-          <!-- Populated by script based on available categories in questions.json -->
+  <main>
+    <div class="grid cols-2">
+      <section class="panel">
+        <h2 style="margin:0 0 .5rem 0; font-size:1.05rem">Deck & Session</h2>
+        <div class="controls">
+          <label class="filelabel" for="fileInput">📥 Import Deck (CSV/JSON)</label>
+          <input id="fileInput" type="file" accept=".csv,.json,text/csv,application/json" />
+          <button class="btn ghost small" id="btnExport">Export Deck</button>
+          <button class="btn ghost small" id="btnClearProgress" title="Does not delete cards">Clear Progress</button>
+          <button class="btn ghost small" id="btnReset">Reset to Sample</button>
         </div>
-        <label class="inline">
-          <input type="checkbox" id="mix-all" checked />
-          Mix all topics
-        </label>
-      </fieldset>
+        <div class="sep"></div>
+        <div class="stats">
+          <div><span class="mutetext">Cards in deck:</span> <b id="statCount">0</b></div>
+          <div><span class="mutetext">Again:</span> <b id="statAgain">0</b></div>
+          <div><span class="mutetext">Good:</span> <b id="statGood">0</b></div>
+          <div><span class="mutetext">Easy:</span> <b id="statEasy">0</b></div>
+        </div>
+        <div class="progressbar" style="margin-top:.5rem"><div id="prog"></div></div>
+        <p class="hint" style="margin:.5rem 0 0">Tip: CSV columns should be <b>front,back,topic,diff</b>. Extra columns are ignored.</p>
+      </section>
 
-      <fieldset>
-        <legend>Difficulty</legend>
-        <label class="inline"><input type="radio" name="difficulty" value="any" checked /> Any</label>
-        <label class="inline"><input type="radio" name="difficulty" value="beginner" /> Beginner</label>
-        <label class="inline"><input type="radio" name="difficulty" value="intermediate" /> Intermediate</label>
-        <label class="inline"><input type="radio" name="difficulty" value="advanced" /> Advanced</label>
-      </fieldset>
-
-      <fieldset class="grid-2">
-        <label>Questions per round
-          <input type="number" id="num-questions" min="5" max="50" value="20" />
-        </label>
-        <label>Shuffle answers
-          <select id="shuffle-answers">
-            <option value="yes" selected>Yes</option>
-            <option value="no">No</option>
-          </select>
-        </label>
-      </fieldset>
-
-      <div class="actions">
-        <button type="submit" class="btn primary">Start Quiz</button>
-        <button type="button" id="btn-review-mode" class="btn">Review Missed</button>
-      </div>
-    </form>
-
-    <section class="panel">
-      <h3>About</h3>
-      <p>This is a self-contained study app for NAMS/NCMP prep. It randomizes your questions, tracks missed items, and supports review rounds.</p>
-      <ul>
-        <li><strong>Missed tracking:</strong> Saved on your device (no login).</li>
-        <li><strong>Review Mode:</strong> Drills only your previously missed questions.</li>
-        <li><strong>Score history:</strong> See performance trends.</li>
-      </ul>
-    </section>
-
-    <section class="panel" id="history-panel">
-      <h3>Score History</h3>
-      <table id="history-table" aria-label="Score History">
-        <thead>
-          <tr><th>Date</th><th>Score</th><th>Correct</th><th>Total</th><th>Settings</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <div class="history-actions">
-        <button type="button" id="btn-clear-history" class="btn danger">Clear History</button>
-        <button type="button" id="btn-clear-missed" class="btn">Clear Missed</button>
-      </div>
-    </section>
-  </main>
-
-  <main id="view-quiz" class="view" aria-live="polite">
-    <div class="quiz-topbar">
-      <div id="progress">Question 1 / 20</div>
-      <div id="score">Score: 0</div>
-      <button id="btn-exit" class="btn">Exit</button>
+      <section class="panel">
+        <h2 style="margin:0 0 .5rem 0; font-size:1.05rem">Quick Add</h2>
+        <div class="stack">
+          <div class="row">
+            <input id="qFront" placeholder="Front (question/prompt)" />
+          </div>
+          <div class="row">
+            <textarea id="qBack" placeholder="Back (answer/explanation)"></textarea>
+          </div>
+          <div class="row">
+            <input id="qTopic" placeholder="Topic (optional)" />
+            <input id="qDiff" placeholder="Difficulty (Beginner/Intermediate/Advanced)" />
+          </div>
+          <div class="row">
+            <button class="btn small" id="btnAdd">Add Card</button>
+            <span class="hint">Use this to grow your deck as you study.</span>
+          </div>
+        </div>
+      </section>
     </div>
 
-    <article id="card" class="card" aria-labelledby="question-stem">
-      <div class="meta">
-        <span id="q-category" class="pill"></span>
-        <span id="q-difficulty" class="pill"></span>
+    <section class="panel">
+      <div class="card-outer">
+        <div class="card" id="card">
+          <div class="face front">
+            <div class="labels"></div>
+            <div class="q" id="frontText">Click “Start Study” to begin.</div>
+            <div class="nav">
+              <button class="btn secondary small" id="btnPrev">◀ Prev</button>
+              <div class="mutetext">Press <span class="kbd">Space</span> to flip</div>
+              <button class="btn secondary small" id="btnNext">Next ▶</button>
+            </div>
+          </div>
+          <div class="face back">
+            <div class="labels"></div>
+            <div class="a" id="backText">Answer side</div>
+            <div class="nav">
+              <div class="rate">
+                <button class="btn small again"  id="btnAgain">Again</button>
+                <button class="btn small good"   id="btnGood">Good</button>
+                <button class="btn small easy"   id="btnEasy">Easy</button>
+              </div>
+              <button class="btn secondary small" id="btnFlipBack">Flip ⟲</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <h2 id="question-stem">Loading…</h2>
+    </section>
 
-      <form id="choices" class="choices" aria-label="Answer choices" role="radiogroup">
-        <!-- choices injected here -->
-      </form>
-
-      <div id="feedback" class="feedback" aria-live="polite"></div>
-
-      <div class="actions">
-        <button id="btn-submit" class="btn primary">Submit</button>
-        <button id="btn-next" class="btn" disabled>Next</button>
+    <section class="panel">
+      <h2 style="margin:0 0 .5rem 0; font-size:1.05rem">Deck Preview</h2>
+      <div class="list">
+        <table id="deckTable">
+          <thead>
+            <tr><th>#</th><th>Front</th><th>Back</th><th>Topic</th><th>Diff</th><th class="center">✖︎</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
-
-      <details id="explain-wrap" class="explain">
-        <summary>Explanation</summary>
-        <div id="explanation"></div>
-      </details>
-    </article>
+    </section>
   </main>
 
-  <template id="choice-template">
-    <label class="choice">
-      <input type="radio" name="choice" />
-      <span class="letter"></span>
-      <span class="text"></span>
-    </label>
-  </template>
+  <footer>
+    NAMS/NCMP practice helper — flashcards you control. Progress is stored locally in your browser.<br><span class="hint">iPhone tip: Tap the share icon and choose <b>Add to Home Screen</b> for an app-like experience.</span>
+  </footer>
 
-  <script src="script.js"></script>
+<script>
+(() => {
+  // --- Storage keys
+  const LS_DECK = "nams_deck_v1";
+  const LS_PROGRESS = "nams_progress_v1";
+
+  // --- State
+  let deck = [];            // [{id,front,back,topic,diff}]
+  let order = [];           // array of indices for current session
+  let idx = 0;              // pointer within order
+  let flipped = false;
+  let mode = "study";       // "study" or "reviewMissed"
+
+  // --- Elements
+  const el = (id)=>document.getElementById(id);
+  const cardEl = el("card");
+  const frontEl = el("frontText");
+  const backEl = el("backText");
+  const progEl = el("prog");
+  const tBody = document.querySelector("#deckTable tbody");
+
+  const statCount = el("statCount");
+  const statAgain = el("statAgain");
+  const statGood  = el("statGood");
+  const statEasy  = el("statEasy");
+
+  // --- Helpers
+  function uid(){ return Math.random().toString(36).slice(2,9); }
+  function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+
+  function loadDeck(){
+    const raw = localStorage.getItem(LS_DECK);
+    if(raw){
+      try { deck = JSON.parse(raw) || []; }
+      catch{ deck = []; }
+    } else {
+      deck = [];
+    }
+    // If deck is empty for any reason (first run, blocked storage, etc.), seed from embedded sample
+    if(!Array.isArray(deck) || deck.length === 0){
+      deck = sampleDeck();
+      try { localStorage.setItem(LS_DECK, JSON.stringify(deck)); } catch(e){ /* iOS private mode may block */ }
+    }
+}
+
+  function saveDeck(){ localStorage.setItem(LS_DECK, JSON.stringify(deck)); }
+
+  function loadProgress(){
+    const raw = localStorage.getItem(LS_PROGRESS);
+    return raw ? JSON.parse(raw) : {};
+  }
+
+  function saveProgress(p){ localStorage.setItem(LS_PROGRESS, JSON.stringify(p)); }
+
+  function sampleDeck(){
+    return [
+      {id:uid(), topic:"Core", diff:"Beginner", front:"Define menopause.", back:"Twelve consecutive months of amenorrhea after the final menstrual period (FMP), due to ovarian follicular depletion and hypoestrogenism."},
+      {id:uid(), topic:"Core", diff:"Beginner", front:"Differentiate perimenopause vs postmenopause.", back:"Perimenopause: the menopausal transition—irregular cycles, symptoms, fluctuating hormones. Postmenopause: time after 12 months without menses following the FMP."},
+      {id:uid(), topic:"Core", diff:"Intermediate", front:"What is premature menopause / POI?", back:"Premature ovarian insufficiency (POI): loss of ovarian function before age 40; consider systemic estrogen plus progestogen (if uterus) until average age of natural menopause unless contraindicated."},
+      {id:uid(), topic:"Symptoms", diff:"Beginner", front:"What symptoms are included under vasomotor symptoms (VMS)?", back:"Hot flashes and night sweats; often with sleep disruption, anxiety, palpitations, and reduced quality of life."},
+      {id:uid(), topic:"Symptoms", diff:"Beginner", front:"What is genitourinary syndrome of menopause (GSM)?", back:"Chronic hypoestrogenism causing vulvovaginal and lower urinary tract changes: dryness, dyspareunia, irritation, urinary urgency/recurrent UTIs, and decreased lubrication."},
+      {id:uid(), topic:"Assessment", diff:"Intermediate", front:"Initial evaluation of abnormal uterine bleeding (AUB) around the transition?", back:"Pregnancy test if applicable, CBC if heavy bleeding, TSH as indicated, consider transvaginal ultrasound and endometrial sampling depending on age/risk factors."},
+      {id:uid(), topic:"Assessment", diff:"Intermediate", front:"When should endometrial sampling be performed?", back:"Persistent AUB, risk factors for endometrial cancer (obesity, chronic anovulation), age ≥45 with AUB, or failed medical management."},
+      {id:uid(), topic:"HT", diff:"Beginner", front:"Indication for systemic estrogen therapy in midlife women?", back:"Treatment of moderate–severe vasomotor symptoms and prevention of bone loss/fracture in at-risk women; consider genitourinary benefits."},
+      {id:uid(), topic:"HT", diff:"Beginner", front:"Indication for low-dose vaginal estrogen?", back:"Moderate–severe GSM not relieved by nonhormonal options, when systemic therapy is not indicated or needed."},
+      {id:uid(), topic:"HT", diff:"Intermediate", front:"What is the 'timing hypothesis' for HT and cardiovascular risk?", back:"Initiating HT before age 60 or within ~10 years of menopause has a more favorable benefit–risk profile for CHD and all-cause mortality than starting later."},
+      {id:uid(), topic:"Safety", diff:"Intermediate", front:"Absolute contraindications to systemic estrogen therapy?", back:"Breast cancer or estrogen-dependent malignancy, unexplained vaginal bleeding, active or history of VTE/PE or stroke, and active liver disease."},
+      {id:uid(), topic:"Safety", diff:"Advanced", front:"Relative/precaution situations for systemic HT?", back:"High ASCVD risk, uncontrolled hypertension, migraine with aura (consider transdermal), hypertriglyceridemia, gallbladder disease—individualize route/dose."},
+      {id:uid(), topic:"HT", diff:"Beginner", front:"When is progestogen required with estrogen?", back:"Women with an intact uterus need adequate endometrial protection with a progestogen (systemic or local) to prevent hyperplasia/cancer."},
+      {id:uid(), topic:"HT", diff:"Intermediate", front:"Oral vs transdermal estrogen—key differences?", back:"Transdermal bypasses first-pass hepatic metabolism, with lower effects on triglycerides, clotting factors, and gallbladder; useful when VTE risk or hypertriglyceridemia is a concern."},
+      {id:uid(), topic:"HT", diff:"Beginner", front:"Common systemic estrogen options?", back:"17β-estradiol (oral or transdermal), conjugated estrogens (oral), ethinyl estradiol (less used for HT)."},
+      {id:uid(), topic:"HT", diff:"Intermediate", front:"Common progestogen options for endometrial protection?", back:"Micronized progesterone, medroxyprogesterone acetate, norethindrone acetate; levonorgestrel IUD can also provide endometrial protection."},
+      {id:uid(), topic:"HT", diff:"Intermediate", front:"Standard endometrial protection regimens (examples)?", back:"Continuous-combined (daily low-dose progestogen) or cyclic/continuous-sequential (progestogen 10–14 days/month)."},
+      {id:uid(), topic:"Safety", diff:"Advanced", front:"Breast cancer risk and HT—what matters most?", back:"Combined estrogen+progestogen has a small increased risk with duration; estrogen-alone in WHI did not increase and may have reduced risk in some analyses. Risk depends on type, dose, route, duration, and baseline risk."},
+      {id:uid(), topic:"Safety", diff:"Intermediate", front:"VTE risk with HT—how to reduce?", back:"Use the lowest effective dose; prefer transdermal estradiol in women with elevated VTE risk; avoid in women with VTE history/contraindications."},
+      {id:uid(), topic:"Safety", diff:"Advanced", front:"Stroke risk and HT—what affects it?", back:"Risk increases with age and later initiation; transdermal low-dose may carry lower risk than oral; avoid if prior stroke/TIA."},
+      {id:uid(), topic:"Safety", diff:"Intermediate", front:"Gallbladder disease and HT?", back:"Oral estrogen increases gallstone risk more than transdermal; consider transdermal route if gallbladder risk."},
+      {id:uid(), topic:"Bone", diff:"Beginner", front:"Effect of estrogen on bone?", back:"Reduces bone resorption by inhibiting osteoclast activity; preserves bone mineral density and lowers fracture risk while used."},
+      {id:uid(), topic:"Bone", diff:"Intermediate", front:"When to order a DXA scan?", back:"Women ≥65, or younger postmenopausal women with risk factors or FRAX 10-yr major osteoporotic risk above threshold."},
+      {id:uid(), topic:"Bone", diff:"Beginner", front:"Osteoporosis diagnostic T-score threshold?", back:"T-score ≤ −2.5 at the hip or spine; fragility fracture also meets criteria regardless of T-score."},
+      {id:uid(), topic:"Bone", diff:"Beginner", front:"Recommended calcium & vitamin D for midlife women?", back:"Calcium ~1200 mg/day (diet+supplement); vitamin D 800–1000 IU/day—individualize by diet, labs, and guidelines."},
+      {id:uid(), topic:"Nonhormonal", diff:"Intermediate", front:"Evidence-based nonhormonal options for VMS?", back:"SSRIs/SNRIs (e.g., paroxetine, venlafaxine), gabapentin, clonidine; newly approved neurokinin-3 receptor antagonist (e.g., fezolinetant) where available."},
+      {id:uid(), topic:"Nonhormonal", diff:"Beginner", front:"Lifestyle strategies for VMS?", back:"Weight management, layered clothing, cool environment, trigger avoidance, CBT/mind–body strategies; variable evidence but often helpful."},
+      {id:uid(), topic:"GSM", diff:"Beginner", front:"First-line therapy for mild GSM?", back:"Vaginal moisturizers and lubricants; if persistent and no contraindication, low-dose vaginal estrogen or DHEA."},
+      {id:uid(), topic:"GSM", diff:"Intermediate", front:"Does low-dose vaginal estrogen require progestogen?", back:"Not typically; systemic absorption is minimal at low doses. Evaluate if unexpected bleeding occurs."},
+      {id:uid(), topic:"GSM", diff:"Beginner", front:"Behavioral/adjunct options for GSM?", back:"Regular sexual activity or vaginal dilator use, pelvic floor therapy, and continued use of moisturizers."},
+      {id:uid(), topic:"Sexual Health", diff:"Advanced", front:"Indication for testosterone therapy in women?", back:"Consider for postmenopausal women with hypoactive sexual desire disorder (HSDD) after biopsychosocial evaluation; use physiologic dosing and monitor."},
+      {id:uid(), topic:"Special", diff:"Intermediate", front:"Migraine and HT—what route is preferred?", back:"Transdermal estradiol for more stable levels; caution with migraine with aura and vascular risk—individualize."},
+      {id:uid(), topic:"Special", diff:"Intermediate", front:"Diabetes/metabolic syndrome—any HT considerations?", back:"Transdermal route may be preferable; focus on ASCVD risk, BP, lipids, and weight; shared decision-making."},
+      {id:uid(), topic:"Special", diff:"Advanced", front:"Breast cancer survivors with GSM—what’s typical?", back:"Nonhormonal therapies first-line; low-dose vaginal estrogen may be considered in refractory cases through shared decision-making with oncology."},
+      {id:uid(), topic:"Special", diff:"Intermediate", front:"POI: duration of HT?", back:"Continue systemic estrogen (and progestogen if uterus) until the average age of natural menopause unless contraindicated."},
+      {id:uid(), topic:"Transition", diff:"Beginner", front:"Contraception in perimenopause—key point?", back:"Contraception is needed until 12 months after the final menstrual period for those who could become pregnant."},
+      {id:uid(), topic:"Transition", diff:"Intermediate", front:"Using LNG-IUD during the transition—advantages?", back:"Provides contraception, reduces bleeding, and can supply endometrial protection if systemic estrogen is used."},
+      {id:uid(), topic:"Prevention", diff:"Beginner", front:"Breast screening in midlife—general approach?", back:"Follow age-appropriate guidelines for mammography; discuss intervals and shared decision-making based on risk."},
+      {id:uid(), topic:"Prevention", diff:"Intermediate", front:"Cardiovascular prevention priorities at menopause?", back:"Assess ASCVD risk, promote lifestyle changes, manage BP, lipids, diabetes; HT is not indicated for primary CVD prevention."},
+      {id:uid(), topic:"HT", diff:"Beginner", front:"Goal of HT dosing?", back:"Use the lowest effective dose that relieves symptoms and re-evaluate periodically; taper or continue based on ongoing benefit–risk."},
+      {id:uid(), topic:"HT", diff:"Intermediate", front:"How to manage persistent VMS on HT?", back:"Ensure adherence, consider dose/route adjustment (e.g., switch to transdermal), add nonhormonal adjuncts, reassess contraindications and risks."},
+      {id:uid(), topic:"HT", diff:"Intermediate", front:"Approach to unscheduled bleeding on HT?", back:"Check regimen adherence and progestogen adequacy; consider adjusting regimen; if persistent or risk factors present, evaluate endometrium."},
+      {id:uid(), topic:"Safety", diff:"Intermediate", front:"Compounded 'bioidentical' hormones—position?", back:"Not recommended when FDA-approved, tested products exist; concerns about dosing consistency and safety."},
+      {id:uid(), topic:"Symptoms", diff:"Intermediate", front:"Sleep disturbance at midlife—common contributors and approach?", back:"VMS, mood disorders, OSA, poor sleep hygiene. Treat contributors (e.g., manage VMS), reinforce sleep hygiene, consider CBT-I or pharmacotherapy as indicated."},
+      {id:uid(), topic:"Symptoms", diff:"Intermediate", front:"Depressive symptoms during transition—what helps?", back:"Screen and treat per guidelines; psychotherapy and/or antidepressants as indicated; HT may help mood in some symptomatic women but is not an antidepressant."},
+      {id:uid(), topic:"GSM", diff:"Intermediate", front:"Recurrent UTIs after menopause—what role for estrogen?", back:"Low-dose vaginal estrogen reduces recurrence risk in appropriate candidates by improving the urogenital epithelium."},
+      {id:uid(), topic:"Assessment", diff:"Beginner", front:"Is FSH testing required to diagnose menopause?", back:"Not routinely; clinical diagnosis is typically sufficient (12 months amenorrhea). FSH may help in atypical cases or POI workup."},
+      {id:uid(), topic:"Safety", diff:"Beginner", front:"Name three baseline risks to review before starting HT.", back:"Breast cancer risk, thromboembolic (VTE) risk, and cardiovascular risk (ASCVD)."},
+      {id:uid(), topic:"HT", diff:"Intermediate", front:"Counseling point: duration of therapy.", back:"No mandated stop age; continue if benefits outweigh risks and the patient prefers, with periodic re-evaluation."}
+    ];
+  },
+      {id:uid(), topic:"General", diff:"Beginner",
+       front:"Common vasomotor symptoms (VMS) include…",
+       back:"Hot flashes and night sweats; sometimes sleep disturbance, palpitations, and anxiety accompany VMS."},
+      {id:uid(), topic:"Therapy", diff:"Intermediate",
+       front:"Absolute contraindications to systemic estrogen therapy include what key conditions?",
+       back:"Active or history of estrogen-sensitive malignancy (e.g., breast cancer), unexplained vaginal bleeding, active or recent thromboembolic disease or stroke, and active liver disease."},
+      {id:uid(), topic:"Bone", diff:"Intermediate",
+       front:"How does estrogen affect bone metabolism?",
+       back:"Estrogen decreases bone resorption by inhibiting osteoclast activity, helping preserve bone mineral density."},
+      {id:uid(), topic:"Urogenital", diff:"Beginner",
+       front:"First-line therapy for genitourinary syndrome of menopause (GSM)?",
+       back:"Nonhormonal vaginal moisturizers and lubricants; low-dose vaginal estrogen if symptoms persist and no contraindications."}
+    ];
+  }
+
+  function ensureProgressKeys(p){
+    for(const c of deck){
+      if(!p[c.id]) p[c.id] = {again:0, good:0, easy:0, seen:0};
+    }
+    return p;
+  }
+
+  function updateStats(){
+    const p = ensureProgressKeys(loadProgress());
+    let a=0,g=0,e=0;
+    for(const c of deck){
+      a += p[c.id].again;
+      g += p[c.id].good;
+      e += p[c.id].easy;
+    }
+    statCount.textContent = deck.length;
+    statAgain.textContent = a;
+    statGood.textContent  = g;
+    statEasy.textContent  = e;
+  }
+
+  function renderTable(){
+    tBody.innerHTML = "";
+    deck.forEach((c,i)=>{
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td class="mutetext">${i+1}</td>
+        <td>${escapeHtml(c.front).slice(0,120)}${c.front.length>120?'…':''}</td>
+        <td class="mutetext">${escapeHtml(c.back).slice(0,120)}${c.back.length>120?'…':''}</td>
+        <td class="mutetext">${escapeHtml(c.topic||"")}</td>
+        <td class="mutetext">${escapeHtml(c.diff||"")}</td>
+        <td class="center"><button class="btn ghost small" data-del="${c.id}" title="Delete">✖︎</button></td>`;
+      tBody.appendChild(tr);
+    });
+  }
+
+  function escapeHtml(s=""){
+    return s.replace(/[&<>"']/g, (m)=>({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" }[m]));
+  }
+
+  function startStudy(){
+    mode = "study";
+    order = shuffle([...Array(deck.length).keys()]);
+    idx = 0;
+    showCurrent();
+  }
+
+  function reviewMissed(){
+    mode = "reviewMissed";
+    const p = ensureProgressKeys(loadProgress());
+    const missedIdx = deck.map((c,i)=>[i,p[c.id].again]).filter(([i,a])=>a>0).map(([i])=>i);
+    if(missedIdx.length===0){
+      alert("No missed cards yet. Mark some as Again to build a review set.");
+      return;
+    }
+    order = shuffle(missedIdx);
+    idx = 0;
+    showCurrent();
+  }
+
+  function showCurrent(){
+    flipped = false;
+    cardEl.classList.remove("flipped");
+    if(order.length===0){ frontEl.textContent = "Deck is empty. Add or import cards."; backEl.textContent = ""; return; }
+    const i = order[idx];
+    const c = deck[i];
+    frontEl.textContent = c.front;
+    backEl.textContent  = c.back;
+    // Labels
+    document.querySelectorAll(".labels").forEach(el=>{
+      el.innerHTML = `${c.topic?`<span class="tag">${escapeHtml(c.topic)}</span>`:""} ${c.diff?`<span class="tag">${escapeHtml(c.diff)}</span>`:""}`;
+    });
+    // Progress bar
+    progEl.style.width = `${Math.round(((idx+1)/order.length)*100)}%`;
+  }
+
+  function nextCard(step=1){
+    if(order.length===0) return;
+    idx = (idx + step + order.length) % order.length;
+    showCurrent();
+  }
+
+  function rate(kind){
+    const i = order[idx];
+    const c = deck[i];
+    const p = ensureProgressKeys(loadProgress());
+    p[c.id].seen++;
+    if(kind==="again") p[c.id].again++;
+    if(kind==="good")  p[c.id].good++;
+    if(kind==="easy")  p[c.id].easy++;
+    saveProgress(p);
+    updateStats();
+    nextCard(1);
+  }
+
+  function flip(){ flipped=!flipped; cardEl.classList.toggle("flipped", flipped); }
+
+  // --- Import / Export
+  function parseCSV(text){
+    // Expect headers: front,back,topic,diff (ignore extras)
+    const rows = text.split(/\r?\n/).filter(x=>x.trim().length);
+    if(rows.length===0) return [];
+    const hdr = rows[0].split(",").map(s=>s.trim().toLowerCase());
+    const idxF = hdr.indexOf("front");
+    const idxB = hdr.indexOf("back");
+    const idxT = hdr.indexOf("topic");
+    const idxD = hdr.indexOf("diff");
+    const out = [];
+    for(let i=1;i<rows.length;i++){
+      const cols = splitCSVRow(rows[i]);
+      const front = (idxF>=0 && cols[idxF]) ? cols[idxF] : "";
+      const back  = (idxB>=0 && cols[idxB]) ? cols[idxB] : "";
+      if(!front || !back) continue;
+      out.push({
+        id: uid(),
+        front, back,
+        topic: (idxT>=0 ? (cols[idxT]||"") : ""),
+        diff:  (idxD>=0 ? (cols[idxD]||"") : "")
+      });
+    }
+    return out;
+  }
+
+  function splitCSVRow(row){
+    // Simple CSV parser (supports quoted commas)
+    const out = [];
+    let cur = "", inQ = false;
+    for(let i=0;i<row.length;i++){
+      const ch = row[i];
+      if(ch === '"' ){
+        if(inQ && row[i+1]==='"'){ cur+='"'; i++; }
+        else inQ = !inQ;
+      } else if(ch === "," && !inQ){
+        out.push(cur); cur="";
+      } else {
+        cur += ch;
+      }
+    }
+    out.push(cur);
+    return out.map(s=>s.trim());
+  }
+
+  function toCSV(cards){
+    const hdr = ["front","back","topic","diff"];
+    const lines = [hdr.join(",")];
+    for(const c of cards){
+      const esc = s => `"${String(s??"").replace(/"/g,'""')}"`;
+      lines.push([esc(c.front), esc(c.back), esc(c.topic||""), esc(c.diff||"")].join(","));
+    }
+    return lines.join("\n");
+  }
+
+  function download(filename, text, mime="text/plain"){
+    const blob = new Blob([text], {type:mime});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename; a.click();
+    setTimeout(()=>URL.revokeObjectURL(url), 500);
+  }
+
+  // --- UI wiring
+  function wire(){
+    el("btnStudy").addEventListener("click", startStudy);
+    el("btnReview").addEventListener("click", reviewMissed);
+    el("btnPrev").addEventListener("click", ()=>nextCard(-1));
+    el("btnNext").addEventListener("click", ()=>nextCard(1));
+    el("btnFlipBack").addEventListener("click", flip);
+    cardEl.addEventListener("click", (e)=>{
+      // only flip if clicking inside face area, not buttons
+      if(e.target.closest(".btn")) return;
+      flip();
+    });
+    document.addEventListener("keydown", (e)=>{
+      if(e.code==="Space"){ e.preventDefault(); flip(); }
+      if(e.key==="ArrowRight"){ nextCard(1); }
+      if(e.key==="ArrowLeft"){ nextCard(-1); }
+      if(e.key==="1"){ rate("again"); }
+      if(e.key==="2"){ rate("good"); }
+      if(e.key==="3"){ rate("easy"); }
+    });
+    el("btnAgain").addEventListener("click", ()=>rate("again"));
+    el("btnGood").addEventListener("click",  ()=>rate("good"));
+    el("btnEasy").addEventListener("click",  ()=>rate("easy"));
+
+    el("btnAdd").addEventListener("click", ()=>{
+      const front = el("qFront").value.trim();
+      const back  = el("qBack").value.trim();
+      const topic = el("qTopic").value.trim();
+      const diff  = el("qDiff").value.trim();
+      if(!front || !back){ alert("Front and Back are required."); return; }
+      deck.push({id:uid(), front, back, topic, diff});
+      saveDeck(); renderTable(); updateStats();
+      el("qFront").value=""; el("qBack").value=""; el("qTopic").value=""; el("qDiff").value="";
+      if(order.length===0) startStudy();
+    });
+
+    el("btnExport").addEventListener("click", ()=>{
+      const csv = toCSV(deck);
+      download("nams_deck.csv", csv, "text/csv");
+    });
+
+    el("btnClearProgress").addEventListener("click", ()=>{
+      localStorage.removeItem(LS_PROGRESS);
+      updateStats();
+      alert("Progress cleared. Your cards are intact.");
+    });
+
+    el("btnReset").addEventListener("click", ()=>{
+      if(!confirm("Reset to the sample deck? This will replace your current deck.")) return;
+      deck = sampleDeck(); saveDeck(); renderTable(); updateStats(); startStudy();
+    });
+
+    // Delete rows
+    tBody.addEventListener("click", (e)=>{
+      const btn = e.target.closest("button[data-del]");
+      if(!btn) return;
+      const id = btn.getAttribute("data-del");
+      const i = deck.findIndex(c=>c.id===id);
+      if(i>=0) deck.splice(i,1);
+      saveDeck(); renderTable(); updateStats();
+      if(order.length){ startStudy(); }
+    });
+
+    // File import
+    el("fileInput").addEventListener("change", async (e)=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      const text = await file.text();
+      let imported = [];
+      try{
+        if(file.name.toLowerCase().endsWith(".json")){
+          const arr = JSON.parse(text);
+          imported = Array.isArray(arr) ? arr.map(x=>({
+            id: uid(),
+            front: String(x.front||x.term||x.question||"").trim(),
+            back:  String(x.back||x.answer||"").trim(),
+            topic: String(x.topic||"").trim(),
+            diff:  String(x.diff||x.difficulty||"").trim(),
+          })).filter(x=>x.front && x.back) : [];
+        }else{
+          imported = parseCSV(text);
+        }
+      }catch(err){
+        alert("Could not parse file. Make sure it is CSV or JSON with front/back fields.");
+        return;
+      }
+      if(imported.length===0){ alert("No valid cards found."); return; }
+      if(!confirm(`Import ${imported.length} cards and replace current deck?`)) return;
+      deck = imported;
+      saveDeck(); renderTable(); updateStats(); startStudy();
+      e.target.value = "";
+    });
+  }
+
+  // Init
+  loadDeck();
+  ensureProgressKeys(loadProgress());
+  renderTable();
+  updateStats();
+  wire();
+
+})(); 
+</script>
 </body>
 </html>
